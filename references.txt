@@ -1,0 +1,32 @@
+REFERENCES FOR KIDCODE PRODUCT CATALOG PROJECT
+
+Layout Inspiration & Structure:
+
+Sino Dental Group Limited (Product Detail Layout)
+
+URL: https://www.sinodentalgroup.com/
+
+Brand Identity & Product Data:
+
+Kidocode Official Website (Packages, Pricing, & Curriculum)
+
+URL: https://www.kidocode.com/
+
+Technical Documentation (Code Logic):
+
+MDN Web Docs: CSS Grid Layout
+URL: https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_grid_layout
+
+MDN Web Docs: CSS Flexbox
+URL: https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_flexible_box_layout
+
+MDN Web Docs: HTML5 Semantic Elements
+URL: https://developer.mozilla.org/en-US/docs/Glossary/Semantics
+
+Design Assets & Typography:
+
+Google Fonts (Inter Font Family)
+URL: https://fonts.google.com/specimen/Inter
+
+Kidocode Asset CDN (Logo and SVG Symbols)
+URL: https://www.google.com/search?q=https://cdn.prod.website-files.com/
