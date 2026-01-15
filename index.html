@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kidocode | Knight Degree - Professional Catalog View</title>
+    <!-- clean, modern fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* --- design system tokens --- 
+           we use variables to make it super easy for the user or supervisor 
+           to swap colors later if needed! 
+        */
+        :root {
+            --kido-bg: #050505;
+            --kido-surface: #121212;
+            --kido-accent: #8a2be2;
+            --kido-secondary: #ff0080;
+            --kido-border: #262626;
+            --kido-text: #f0f0f0;
+            --kido-text-dim: #888888;
+            --kido-sidebar-bg: #181818;
+            --kido-card-hover: #1f1f1f;
+        }
+
+        /* basic global resets */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--kido-bg);
+            color: var(--kido-text);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* --- 1. top utility bar --- 
+           mirrors the sino dental 'header-top' for trust markers
+        */
+        .utility-header {
+            background: #000;
+            border-bottom: 1px solid var(--kido-border);
+            padding: 10px 0;
+            font-size: 12px;
+            color: var(--kido-text-dim);
+        }
+
+        /* --- 2. main brand header --- */
+        .brand-header {
+            padding: 20px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand-logo img { height: 40px; }
+
+        .header-contact-info {
+            text-align: right;
+            border-left: 2px solid var(--kido-accent);
+            padding-left: 15px;
+        }
+
+        /* --- 3. secondary navigation (sticky) --- */
+        .sticky-nav {
+            background: var(--kido-accent);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            padding: 15px 25px;
+            display: block;
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            transition: background 0.3s;
+        }
+
+        .nav-links a:hover, .nav-links .active {
+            background: rgba(0,0,0,0.15);
+        }
+
+        /* --- 4. breadcrumbs --- */
+        .breadcrumb-bar {
+            padding: 15px 0;
+            font-size: 13px;
+            color: var(--kido-text-dim);
+            border-bottom: 1px solid var(--kido-border);
+        }
+
+        .breadcrumb-bar a {
+            color: var(--kido-accent);
+            text-decoration: none;
+        }
+
+        /* --- 5. main layout: sidebar + content --- */
+        .main-layout {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 40px;
+            margin-top: 30px;
+        }
+
+        /* sidebar modules */
+        .sidebar-section {
+            background: var(--kido-sidebar-bg);
+            border: 1px solid var(--kido-border);
+            border-radius: 8px;
+            margin-bottom: 25px;
+            overflow: hidden;
+        }
+
+        .sidebar-heading {
+            background: #222;
+            padding: 12px 20px;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--kido-accent);
+            border-bottom: 1px solid var(--kido-border);
+        }
+
+        .side-menu { list-style: none; }
+        .side-menu li a {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 20px;
+            color: var(--kido-text);
+            text-decoration: none;
+            font-size: 13px;
+            border-bottom: 1px solid var(--kido-border);
+            transition: background 0.3s;
+        }
+
+        .side-menu li a:hover {
+            background: var(--kido-card-hover);
+            color: var(--kido-accent);
+        }
+
+        /* new package spotlight in sidebar */
+        .spotlight-card {
+            padding: 20px;
+            text-align: center;
+        }
+
+        .spotlight-card img {
+            width: 80%;
+            margin-bottom: 10px;
+            opacity: 0.8;
+        }
+
+        /* --- 6. product detail components --- */
+        .product-header-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 50px;
+        }
+
+        .gallery-preview {
+            background: var(--kido-sidebar-bg);
+            aspect-ratio: 1/1;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--kido-border);
+        }
+
+        .product-meta-block h1 {
+            font-size: 30px;
+            margin-bottom: 15px;
+        }
+
+        .meta-tag-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .tag-pill {
+            background: #222;
+            font-size: 11px;
+            padding: 4px 10px;
+            border-radius: 4px;
+            color: var(--kido-text-dim);
+        }
+
+        .price-highlight-box {
+            background: #111;
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 4px solid var(--kido-secondary);
+            margin-bottom: 30px;
+        }
+
+        /* --- 7. inquiry form (mirrored from sino dental) --- */
+        .inquiry-container {
+            background: var(--kido-sidebar-bg);
+            border: 1px solid var(--kido-border);
+            border-radius: 12px;
+            padding: 40px;
+            margin-top: 60px;
+        }
+
+        .inquiry-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 25px;
+        }
+
+        .input-wrap {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .input-wrap label { font-size: 13px; font-weight: 600; }
+        .input-wrap input, .input-wrap textarea {
+            background: #0a0a0a;
+            border: 1px solid var(--kido-border);
+            padding: 12px;
+            color: white;
+            border-radius: 5px;
+            outline: none;
+        }
+
+        .verify-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .verify-box {
+            background: var(--kido-accent);
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: 800;
+            letter-spacing: 3px;
+        }
+
+        /* --- 8. related products --- */
+        .related-heading {
+            margin-top: 80px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--kido-border);
+            font-size: 22px;
+        }
+
+        .related-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .related-item {
+            background: var(--kido-sidebar-bg);
+            border: 1px solid var(--kido-border);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+        .related-item:hover {
+            transform: translateY(-5px);
+            border-color: var(--kido-accent);
+        }
+
+        /* footer */
+        .footer-main {
+            background: #000;
+            padding: 80px 0 30px;
+            margin-top: 100px;
+            border-top: 1px solid var(--kido-border);
+        }
+
+        .footer-cols {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+        }
+
+        .footer-col h5 { color: white; margin-bottom: 20px; font-size: 16px; }
+        .footer-col p, .footer-col a { color: var(--kido-text-dim); font-size: 13px; text-decoration: none; }
+
+        @media (max-width: 900px) {
+            .main-layout, .product-header-group, .inquiry-grid { grid-template-columns: 1fr; }
+            .sidebar-container { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- utility top bar -->
+    <section class="utility-header">
+        <div class="container" style="display: flex; justify-content: space-between;">
+            <div>Kidocode Technopreneurship Academy Limited</div>
+            <div>Language: English | MYR</div>
+        </div>
+    </section>
+
+    <!-- brand branding header -->
+    <header class="brand-header container">
+        <a href="#" class="brand-logo">
+            <img src="https://cdn.prod.website-files.com/61d6943d6b5924685ac825ca/64a6a12136e8f756c9df3baa_k-combomark-white.svg" alt="Kidocode">
+        </a>
+        <div class="header-contact-info">
+            <p style="font-size: 12px; color: var(--kido-text-dim);">Enrolment Hotline:</p>
+            <p style="font-weight: 700; font-size: 18px;">+60 12 202 0748</p>
+        </div>
+    </header>
+
+    <!-- navigation -->
+    <nav class="sticky-nav">
+        <div class="container">
+            <ul class="nav-links">
+                <li><a href="#">Home</a></li>
+                <li><a href="#">About Us</a></li>
+                <li><a href="#" class="active">Product</a></li>
+                <li><a href="#">Contact Us</a></li>
+                <li><a href="#">Certifications</a></li>
+                <li><a href="#">FAQ</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- breadcrumbs -->
+    <div class="breadcrumb-bar">
+        <div class="container">
+            <a href="#">Home</a> > <a href="#">Packages</a> > <a href="#">Tech Degrees</a> > <span>Knight Degree Bundle</span>
+        </div>
+    </div>
+
+    <!-- main product layout -->
+    <main class="container main-layout">
+        
+        <!-- side navigation area -->
+        <aside class="sidebar-container">
+            <div class="sidebar-section">
+                <div class="sidebar-heading">Categories</div>
+                <ul class="side-menu">
+                    <li><a href="#">Coding Tracks <span>></span></a></li>
+                    <li><a href="#">AI Anatomy <span>></span></a></li>
+                    <li><a href="#">Entrepreneurship <span>></span></a></li>
+                    <li><a href="#">Electronics & Robotics <span>></span></a></li>
+                    <li><a href="#">MathLab <span>></span></a></li>
+                </ul>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-heading">Currency Settings</div>
+                <div style="padding: 15px;">
+                    <select id="currencyCtrl" onchange="syncPricing()" style="width:100%; padding: 8px; background: #000; color: white; border: 1px solid #333;">
+                        <option value="myr">MYR - Malaysia</option>
+                        <option value="usd">USD - Global</option>
+                        <option value="sgd">SGD - Singapore</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- new package spotlight -->
+            <div class="sidebar-section">
+                <div class="sidebar-heading">New Bundle</div>
+                <div class="spotlight-card">
+                    <img src="https://cdn.prod.website-files.com/61d6943d6b5924685ac825ca/6205f9b683e12fa93f5be108_symbol-new.svg" alt="New">
+                    <p style="font-size: 14px; font-weight: 700; margin-bottom: 10px;">Master Degree 2026</p>
+                    <a href="#" style="color: var(--kido-accent); font-size: 12px; text-decoration: none;">View Detail ></a>
+                </div>
+            </div>
+        </aside>
+
+        <!-- product details display -->
+        <section class="content-display">
+            <div class="product-header-group">
+                <div class="gallery-preview">
+                    <img src="https://cdn.prod.website-files.com/61d6943d6b5924685ac825ca/6205f9b683e12fa93f5be108_symbol-new.svg" width="120" alt="Package Symbol">
+                </div>
+                <div class="product-meta-block">
+                    <h1>Knight Degree Bundle</h1>
+                    <div class="meta-tag-row">
+                        <span class="tag-pill">ID: KIDO-KNT-900</span>
+                        <span class="tag-pill">TAGS: AI, CODING, TECH</span>
+                    </div>
+
+                    <div class="price-highlight-box">
+                        <p style="font-size: 12px; color: var(--kido-secondary); font-weight: 700; text-transform: uppercase;">Average Learning Rate</p>
+                        <p id="mainPrice" style="font-size: 34px; font-weight: 800;">RM45-56 <span style="font-size: 14px; color: #666; font-weight: 400;">/ hour</span></p>
+                    </div>
+
+                    <div style="display: flex; gap: 10px;">
+                        <button class="btn-action" onclick="jumpToForm()" style="background: var(--kido-accent); color: white; border: none; padding: 12px 25px; border-radius: 5px; font-weight: 700; cursor: pointer;">INQUIRY</button>
+                        <button class="btn-action" style="background: #222; color: white; border: none; padding: 12px 25px; border-radius: 5px; font-weight: 700; cursor: pointer;">EMAIL BROCHURE</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- details description -->
+            <div class="description-text">
+                <h3 style="margin-bottom: 20px; color: var(--kido-accent);">Product Description</h3>
+                <div style="color: var(--kido-text-dim); font-size: 14px; border-left: 2px solid #333; padding-left: 20px;">
+                    <p>● Includes 10 specialized courses covering high-demand technologies.</p>
+                    <p style="margin: 10px 0;">● 300 hours of core learning content + 100 hours of independent project time.</p>
+                    <p>● Exposure to AI Ethics, Prompt Engineering, and Data Science.</p>
+                    <p style="margin: 10px 0;">● Personalized 1-on-1 mentorship sessions monthly.</p>
+                    <p>● Guaranteed graduation certificate upon successful project presentation.</p>
+                    <p style="margin-top: 10px;">● Flexible 24-42 month completion window based on pace.</p>
+                </div>
+            </div>
+
+            <!-- comparison table added for strict accuracy -->
+            <div class="description-text" style="margin-top: 40px;">
+                <h3 style="margin-bottom: 20px; color: var(--kido-accent);">Bundle Comparison</h3>
+                <div style="overflow-x: auto;">
+                    <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
+                        <thead>
+                            <tr style="background: #222; text-align: left;">
+                                <th style="padding: 12px; border: 1px solid var(--kido-border);">Feature</th>
+                                <th style="padding: 12px; border: 1px solid var(--kido-border);">Padawan</th>
+                                <th style="padding: 12px; border: 1px solid var(--kido-border);">Knight (Active)</th>
+                                <th style="padding: 12px; border: 1px solid var(--kido-border);">Master</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="padding: 10px; border: 1px solid var(--kido-border);">Price/Hour (MYR)</td>
+                                <td style="padding: 10px; border: 1px solid var(--kido-border);">RM70-82</td>
+                                <td style="padding: 10px; border: 1px solid var(--kido-border); color: var(--kido-accent); font-weight: 700;">RM45-56</td>
+                                <td style="padding: 10px; border: 1px solid var(--kido-border);">RM35-44</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px; border: 1px solid var(--kido-border);">Coursework Hours</td>
+                                <td style="padding: 10px; border: 1px solid var(--kido-border);">150</td>
+                                <td style="padding: 10px; border: 1px solid var(--kido-border);">300</td>
+                                <td style="padding: 10px; border: 1px solid var(--kido-border);">450</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px; border: 1px solid var(--kido-border);">Project Hours</td>
+                                <td style="padding: 10px; border: 1px solid var(--kido-border);">50</td>
+                                <td style="padding: 10px; border: 1px solid var(--kido-border);">100</td>
+                                <td style="padding: 10px; border: 1px solid var(--kido-border);">150</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px; border: 1px solid var(--kido-border);">Enrolled Students</td>
+                                <td style="padding: 10px; border: 1px solid var(--kido-border);">3,000+</td>
+                                <td style="padding: 10px; border: 1px solid var(--kido-border);">4,000+</td>
+                                <td style="padding: 10px; border: 1px solid var(--kido-border);">1,500+</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- inquiry form mirrored from reference site -->
+            <section id="contactAnchor" class="inquiry-container">
+                <h3 style="text-align: center;">Online Package Inquiry</h3>
+                <form class="inquiry-grid">
+                    <div class="input-wrap">
+                        <label>Subject</label>
+                        <input type="text" value="[Inquiry]: Knight Degree Bundle" readonly>
+                    </div>
+                    <div class="input-wrap">
+                        <label>Parent Name *</label>
+                        <input type="text" placeholder="Your Full Name" required id="pName">
+                    </div>
+                    <div class="input-wrap">
+                        <label>Email *</label>
+                        <input type="email" placeholder="email@address.com" required id="pEmail">
+                    </div>
+                    <div class="input-wrap">
+                        <label>Phone / WhatsApp</label>
+                        <input type="text" placeholder="+60 ...">
+                    </div>
+                    <div class="input-wrap" style="grid-column: span 2;">
+                        <label>Message *</label>
+                        <textarea rows="4" placeholder="Tell us about your child's interests..."></textarea>
+                    </div>
+                    <div class="input-wrap">
+                        <label>Verification Code *</label>
+                        <div class="verify-row">
+                            <input type="text" placeholder="Code" style="width: 100px;">
+                            <div class="verify-box">KD92</div>
+                        </div>
+                    </div>
+                    <div style="grid-column: span 2; margin-top: 10px;">
+                        <button type="button" onclick="handleMockSubmit()" style="background: var(--kido-accent); color: white; border: none; padding: 15px 40px; border-radius: 5px; font-weight: 700; cursor: pointer;">SUBMIT ENQUIRY</button>
+                    </div>
+                </form>
+            </section>
+
+            <!-- related products grid -->
+            <h3 class="related-heading">Related Bundles</h3>
+            <div class="related-grid">
+                <div class="related-item">
+                    <div style="font-size: 24px; margin-bottom: 10px;">Padawan</div>
+                    <p style="font-size: 12px; color: #888;">Tech Foundations</p>
+                    <button style="margin-top: 15px; background: none; border: 1px solid #444; color: #ccc; padding: 5px 15px; border-radius: 4px; font-size: 11px; cursor: pointer;">View More</button>
+                </div>
+                <div class="related-item">
+                    <div style="font-size: 24px; margin-bottom: 10px;">Master</div>
+                    <p style="font-size: 12px; color: #888;">Full Technopreneur</p>
+                    <button style="margin-top: 15px; background: none; border: 1px solid #444; color: #ccc; padding: 5px 15px; border-radius: 4px; font-size: 11px; cursor: pointer;">View More</button>
+                </div>
+                <div class="related-item">
+                    <div style="font-size: 24px; margin-bottom: 10px;">Holiday</div>
+                    <p style="font-size: 12px; color: #888;">Fast-Track Camp</p>
+                    <button style="margin-top: 15px; background: none; border: 1px solid #444; color: #ccc; padding: 5px 15px; border-radius: 4px; font-size: 11px; cursor: pointer;">View More</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- footer section -->
+    <footer class="footer-main">
+        <div class="container footer-cols">
+            <div class="footer-col">
+                <h5>Contact Us</h5>
+                <p>Suite L-5-1, Solaris Mont Kiara,</p>
+                <p>Jalan Solaris, Off Jalan Duta Kiara,</p>
+                <p>50480, Kuala Lumpur, Malaysia</p>
+                <p style="margin-top: 10px;"><strong>General:</strong> +60122020748</p>
+                <p><strong>Sales:</strong> +60122020797</p>
+                <p>Email: info@kidocode.com</p>
+            </div>
+            <div class="footer-col">
+                <h5>Quick Links</h5>
+                <ul style="list-style: none;">
+                    <li><a href="#">Degrees</a></li>
+                    <li><a href="#">Packages</a></li>
+                    <li><a href="#">Platform Workspace</a></li>
+                    <li><a href="#">Gallery</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h5>Social Links</h5>
+                <ul style="list-style: none;">
+                    <li><a href="https://www.facebook.com/KidoCode" target="_blank">Facebook</a></li>
+                    <li><a href="https://www.instagram.com/kidocode/" target="_blank">Instagram</a></li>
+                    <li><a href="https://www.youtube.com/c/KidocodeTV" target="_blank">YouTube</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="container" style="text-align: center; margin-top: 50px; color: #444; font-size: 11px;">
+            COPYRIGHT © 2026 KIDCODE ACADEMY SDN BHD (1133758-X). ALL RIGHTS RESERVED.
+        </div>
+    </footer>
+
+    <!-- logical interactions -->
+    <script>
+        /**
+         * pricing registry for localization
+         * matches the card values precisely from provided reference
+         */
+        const pricingRegistry = {
+            myr: "RM45-56",
+            usd: "$12-15",
+            sgd: "S$15-18"
+        };
+
+        /**
+         * updates the pricing display based on sidebar selection
+         */
+        function syncPricing() {
+            const currency = document.getElementById('currencyCtrl').value;
+            const price = pricingRegistry[currency];
+            document.getElementById('mainPrice').innerHTML = `${price} <span style="font-size: 14px; color: #666; font-weight: 400;">/ hour</span>`;
+        }
+
+        /**
+         * scrolls view to the enquiry form
+         */
+        function jumpToForm() {
+            document.getElementById('contactAnchor').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        /**
+         * handles the inquiry form submission simulation
+         */
+        function handleMockSubmit() {
+            const name = document.getElementById('pName').value;
+            const email = document.getElementById('pEmail').value;
+
+            if (!name || !email) {
+                // custom feedback logic (no alerts!)
+                const container = document.getElementById('contactAnchor');
+                const errorMsg = document.createElement('p');
+                errorMsg.style.color = 'var(--kido-secondary)';
+                errorMsg.innerText = "Please fill in all required fields! (╥﹏╥)";
+                container.prepend(errorMsg);
+                setTimeout(() => errorMsg.remove(), 3000);
+                return;
+            }
+
+            // show success state
+            document.getElementById('contactAnchor').innerHTML = `
+                <div style="text-align: center; padding: 40px;">
+                    <h2 style="color: var(--kido-accent);">Success! (੭˃ᴗ˂)੭</h2>
+                    <p>Thank you ${name}, your inquiry has been recorded. We will contact you at ${email} soon!</p>
+                </div>
+            `;
+        }
+
+        // initialize
+        window.onload = function() {
+            syncPricing();
+        };
+    </script>
+</body>
+</html>
