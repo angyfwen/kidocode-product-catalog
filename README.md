@@ -68,4 +68,3 @@ kidocode asset cdn (logo and svg symbols)
 
 url: https://www.google.com/search?q=https://cdn.prod.website-files.com/
 
-prepared by (yourname) for the kidocode supervisor review.
